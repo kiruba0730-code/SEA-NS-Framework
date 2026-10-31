@@ -1,0 +1,4 @@
+export const access = 'user';
+export const methods = ['GET'];
+import { db } from 'hatchable';
+export default async function(req,res){const a=await db.query("SELECT count(*)::int total,count(*) FILTER (WHERE confidence>=.5)::int anomalies,count(*) FILTER (WHERE severity='CRITICAL')::int critical,count(*) FILTER (WHERE decision='QUARANTINE')::int quarantined,count(*) FILTER (WHERE decision='RECOVERY')::int recovered,coalesce(avg(confidence),0) avg_confidence FROM anomalies");const s=await db.query("SELECT count(*)::int states FROM sea_states");res.json({...a.rows[0],sea_states:s.rows[0].states});}

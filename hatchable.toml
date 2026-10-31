@@ -1,0 +1,8 @@
+name = "SEA-NS Control Center"
+
+[ai]
+required = true
+
+[auth]
+enabled = true
+providers = ["email"]

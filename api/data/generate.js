@@ -1,0 +1,4 @@
+import {db} from "hatchable";import {generateDataset} from "../../lib/sea.js";
+export const access = 'user';
+export const methods=['POST'];
+export default async function(req,res){const b=req.body||{};const rows=generateDataset(Math.min(1000,Math.max(20,Number(b.size||200))),Math.max(0,Math.min(.5,Number(b.anomalyPct||.12))));for(const r of rows)await db.query("INSERT INTO records (record_id,timestamp,temperature,pressure,voltage,current,flow_rate,device_id,source_type,is_anomaly,anomaly_category) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT (record_id) DO NOTHING",[r.record_id,r.timestamp,r.temperature,r.pressure,r.voltage,r.current,r.flow_rate,r.device_id,r.source_type,!!r.is_anomaly,r.anomaly_category||null]);res.json({count:rows.length,anomalies:rows.filter(x=>x.is_anomaly).length})}
